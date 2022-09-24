@@ -1,49 +1,42 @@
 const { Meals } = require('../models/meals.models');
 const { Orders } = require('../models/orders.models');
+const { catchAsync } = require('../utils/catchAsync.utils')
+const { AppError } = require('../utils/AppError.utils')
 
-const mealExist = async (req, res, next) => {
+const mealExist = catchAsync(async (req, res, next) => {
 
     const { mealId } = req.body;
   
     const meal = await Meals.findOne({ where: { id: mealId, status:'active' } });
   
     if (!meal) {
-      res.status(404).json({
-          status: 'error',
-          message: 'Meal does not exist'
-      })
+    return next(new AppError('Meal does not exist'), 404)
     }
     req.meal = meal;
     next();
-  };
+  })
 
-const orderExist = async (req, res, next ) => {
+const orderExist = catchAsync( async (req, res, next ) => {
 
     const { id } = req.params
 
     const order = await Orders.findOne({where: {id, status: 'active'}})
 
     if(!order) {
-        res.status(404).json({
-            status: 'success',
-            data: 'Order not exist'
-        })
+        return(new AppError('Order not exist', 404))
     }
     next()
-}
+})
 
-const protectOrdersOwner = async (req, res, next) => {
+const protectOrdersOwner = catchAsync( async (req, res, next) => {
 
     const { sessionUser, order} = req
 
     if(sessionUser.id !== order.userid) {
-        res.status(403).json({
-            status: 'error',
-			message: 'You are not the owner of this account.',
-        })
+        return next(new AppError('You are not the owner of this account.', 403))
     }
     next()
-}
+})
 
   module.exports = {
     mealExist,

@@ -1,5 +1,7 @@
 const { Meals } = require('../models/meals.models')
 
+const { AppError } = require('../utils/AppError.utils')
+
 const mealExist = async (req, res, next) => {
 
     const { id } = req.params;
@@ -7,11 +9,8 @@ const mealExist = async (req, res, next) => {
     const meal = await Meals.findOne({ where: { id } });
   
     if (!meal) {
-      res.status(404).json({
-          status: 'error',
-          message: 'Meal does not exist'
-      })
-    }
+           return next(new AppError('Meal does not exist', 403))
+     }
     req.meal = meal;
     next();
   };

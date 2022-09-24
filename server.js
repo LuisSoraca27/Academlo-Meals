@@ -17,7 +17,7 @@ const serverStart = async () => {
         PORT = 4000;
         
         app.listen(PORT,() =>{
-            console.log("running port 4000 ;D");
+            console.log("Express app running!");
         })
     } catch (error) {
         console.log(error);

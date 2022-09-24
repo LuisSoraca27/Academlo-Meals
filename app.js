@@ -4,7 +4,8 @@ const express = require('express');
 const { usersRouter } = require('./routes/users.routes')
 const { restaurantsRouter } = require('./routes/restaurants.routes')
 const { mealsRouter } = require('./routes/meals.routes')
-const { ordersRouter } = require('./routes/orders.routes')
+const { ordersRouter } = require('./routes/orders.routes');
+const { globalErrorHandler } = require('./controllers/error.controllers');
 
 const app = express();
 
@@ -18,7 +19,8 @@ app.use('/api/v1/restaurants',restaurantsRouter)
 app.use('/api/v1/meals',mealsRouter)
 app.use('/api/v1/orders', ordersRouter)
 
-
+// Global error handler
+app.use(globalErrorHandler);
 
 
 // Catch non-existing endpoints
@@ -31,6 +33,5 @@ app.all('*', (req, res) => {
 
 
 module.exports = {
- 
 	app,
 }
